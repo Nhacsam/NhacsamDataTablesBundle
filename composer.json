@@ -8,7 +8,7 @@
         {
             "name": "Nicolas Djambazian",
             "email": "nicolas@djambazian.fr",
-            "homepage": "nicolas.djambazian.fr"
+            "homepage": "http://nicolas.djambazian.fr"
         }
     ],
     "minimum-stability": "dev",
@@ -21,11 +21,8 @@
         "doctrine/doctrine-bundle": "*",
         "doctrine/orm": "~2.3"
     },
-    "suggest": {
-        "willdurand/propel-typehintable-behavior": "Needed when using the propel implementation"
-    },
     "autoload": {
-        "psr-4": { "Nhacsam\\DatatableBundle\\": "" }
+        "psr-4": { "Nhacsam\\DataTablesBundle\\": "" }
     },
     "extra": {
         "branch-alias": {
