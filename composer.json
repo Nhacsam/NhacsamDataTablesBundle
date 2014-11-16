@@ -1,0 +1,36 @@
+{
+    "name": "nhacsam/datatable-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony DatatableBundle",
+    "keywords": ["Datatable", "Table"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Djambazian",
+            "email": "nicolas@djambazian.fr",
+            "homepage": "nicolas.djambazian.fr"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.2",
+        "datatables/datatables" : "~1.10",
+        "symfony/framework-bundle": "~2.3",
+    },
+    "require-dev": {
+        "doctrine/doctrine-bundle": "*",
+        "doctrine/orm": "~2.3",
+    },
+    "suggest": {
+        "willdurand/propel-typehintable-behavior": "Needed when using the propel implementation"
+    },
+    "autoload": {
+        "psr-4": { "Nhacsam\\DatatableBundle\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.0-dev"
+        }
+    }
+}
+
