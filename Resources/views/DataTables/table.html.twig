@@ -1,0 +1,36 @@
+<table id="dataTable-{{ builder.name }}" class="nhcsam_dataTable">
+    {% if builder.useClientSide %}
+        <thead>
+            <tr>
+                {% if builder.viewRouteName %}
+                    <th></th>
+                {% endif %}
+                {% for col in builder.columns %}  
+                    <th>
+                        <div class="sort-arrows-container">
+                            <span class="fa fa-angle-up"></span>
+                            <span class="fa fa-angle-down"></span>
+                        </div>
+                        {{ col.label | trans({}, col.translationDomain)}}
+                    </th>       
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+          {% for entity in builder.allEntities %}
+                <tr>
+                    {% if builder.viewRouteName %}
+                        <td>
+                            <a href="{{ path(builder.viewRouteName, {"id":entity.id}) }}">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                        </td>
+                    {% endif %}
+                    {% for col in builder.columns %}  
+                        <td>{{ col.value(entity)|trans({}, col.translationDomain)|raw }}</td>       
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    {% endif %}
+</table>

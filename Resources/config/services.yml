@@ -1,0 +1,14 @@
+services:
+    datatables.factory:
+        class:  Nhacsam\DataTablesBundle\Services\DataTablesContainer
+        arguments: [@doctrine]
+
+    
+    
+    
+    
+    datatable.twig:
+        class:        Nhacsam\DataTablesBundle\Twig\Extension\DataTablesExtension
+        arguments:   [@datatables.factory]
+        tags:
+            - { name: twig.extension }

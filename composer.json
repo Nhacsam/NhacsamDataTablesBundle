@@ -14,7 +14,6 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.2",
-        "datatables/datatables" : "~1.10",
         "symfony/framework-bundle": "~2.3"
     },
     "require-dev": {
@@ -22,7 +21,7 @@
         "doctrine/orm": "~2.3"
     },
     "autoload": {
-        "psr-4": { "Nhacsam\\DataTablesBundle\\": "" }
+        "psr-0": { "Nhacsam\\DataTablesBundle\\": "" }
     },
     "extra": {
         "branch-alias": {

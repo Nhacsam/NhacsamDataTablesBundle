@@ -1,0 +1,86 @@
+<script type="text/javascript" src="{{asset('bundles/nhacsamdatatables/js/jquery.dataTables.min.js')}}"></script>
+<script>
+
+$(document).ready(function() {
+    var oTable = $('#dataTable-{{ builder.name }}').DataTable({
+        "displayLength": 50,    
+        "columns": [
+            {% if builder.viewRouteName %}
+                {
+                    type: null,
+                    name: "view",
+                    orderable: false,
+                    searchable: false
+                },
+            {% endif %}
+            {% for col in builder.columns %}
+                {
+                    type:  {{ dataTableType(col.type, col.dateFormat)|raw }},
+                    name: "{{ col.name }}",
+                    orderable: {{ col.sortable ? 'true' : 'false' }},
+                    searchable: {{ col.searchable ? 'true' : 'false' }}
+                }, 
+            {% endfor %}
+        ],
+        serverSide: {{ builder.useClientSide ? 'false' : 'true' }},
+        {#{% if server_side %}
+            ajax : {
+            {% if method_name %}
+                url: "{{ url('dt_entity_list_server_side_and_method', {entity_name: entity_name_url, method_name: method_name}) }}",
+                error: function() {
+                    document.location = "{{ url('dt_entity_list_custom', {
+                        entity_name: entity_name_url,
+                        methode_name: method_name,
+                        client_side: true
+                    }) }}";
+                }
+            {% else %}
+                url: "{{ url('dt_entity_list_server_side', {entity_name: entity_name_url}) }}",
+                error: function() {
+                    document.location = "{{ url('dt_entity_list', {
+                        entity_name: entity_name_url,
+                        client_side: true
+                    }) }}";
+                }
+            {% endif %}
+            },
+        {% endif %}
+
+        {% if sort_way != false %}
+            order: [ [{{ sort_index }},"{{ sort_way }}"] ],
+        {% else %}
+            order: [ [1, "asc"] ],
+        {% endif %}#}
+
+    });
+{#
+    $('#all-reservations_filter label').remove();
+    $('#all-reservations_filter').append($('#custom_all-reservations_filter').html());
+    $('#custom_all-reservations_filter').remove();
+
+
+
+
+    $('#dataTable-search').on( 'change', function(){
+        oTable.search($(this).val()).draw();
+
+    });
+
+    $('#date-picker').datepicker({
+        dateFormat: 'yy-mm-dd',
+        onSelect:function(date){
+            $('#dataTable-search').val(date);
+            oTable.search(date).draw();
+        }
+    });
+
+    $("#utils-search li a").click(function(e){
+        var date = $(this).data('val');
+        $('#dataTable-search').val(date);
+        oTable.search(date).draw();
+        e.preventDefault();
+    });#}
+
+
+} );
+</script>
