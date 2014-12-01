@@ -51,10 +51,10 @@ class DataTablesExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('dataTable', array($this, 'dataTable')),
-            new \Twig_SimpleFunction('dataTableJs', array($this, 'dataTableJs')),
-            new \Twig_SimpleFunction('dataTableCss', array($this, 'dataTableCss')),
-            new \Twig_SimpleFunction('dataTableType', array($this, 'dataTableType')),
+            'dataTable' => new \Twig_Function_Method($this, 'dataTable', array('is_safe' => array('html'))),
+            'dataTableJs' => new \Twig_Function_Method($this, 'dataTableJs', array('is_safe' => array('html'))),
+            'dataTableCss' => new \Twig_Function_Method($this, 'dataTableCss', array('is_safe' => array('html'))),
+            'dataTableType' => new \Twig_Function_Method($this, 'dataTableType', array('is_safe' => array('html'))),
         );
     }
 
