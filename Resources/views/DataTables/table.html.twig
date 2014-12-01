@@ -19,11 +19,9 @@
         <tbody>
           {% for entity in builder.allEntities %}
                 <tr>
-                    {% if builder.viewRouteName %}
+                    {% if builder.viewUrl(entity) %}
                         <td>
-                            <a href="{{ path(builder.viewRouteName, {"id":entity.id}) }}">
-                                <i class="fa fa-eye"></i>
-                            </a>
+                            {{ builder.viewLink(builder.viewUrl(entity))|raw }}
                         </td>
                     {% endif %}
                     {% for col in builder.columns %}  
