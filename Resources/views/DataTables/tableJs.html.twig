@@ -7,10 +7,10 @@ $(document).ready(function() {
     var oTable = $('#dataTable-{{ builder.name }}').DataTable({
         "displayLength": 50,    
         "columns": [
-            {% if builder.viewRouteName %}
+            {% if builder.hasViewColumn %}
                 {
                     type: null,
-                    name: "view",
+                    name: "nhacsam_dt_view",
                     orderable: false,
                     searchable: false
                 },
@@ -26,26 +26,7 @@ $(document).ready(function() {
         ],
         serverSide: {{ builder.useClientSide ? 'false' : 'true' }},
         {% if not builder.useClientSide %}
-            ajax : {
-            {% if method_name %}
-                url: "{{ url('dt_entity_list_server_side_and_method', {entity_name: entity_name_url, method_name: method_name}) }}",
-                error: function() {
-                    document.location = "{{ url('dt_entity_list_custom', {
-                        entity_name: entity_name_url,
-                        methode_name: method_name,
-                        client_side: true
-                    }) }}";
-                }
-            {% else %}
-                url: "{{ url('dt_entity_list_server_side', {entity_name: entity_name_url}) }}",
-                error: function() {
-                    document.location = "{{ url('dt_entity_list', {
-                        entity_name: entity_name_url,
-                        client_side: true
-                    }) }}";
-                }
-            {% endif %}
-            },
+            ajax : "{{ url('nhacsam_datatables_serverside_ajax', {builder_name: builder.name}) }}"
         {% endif %}
 
 

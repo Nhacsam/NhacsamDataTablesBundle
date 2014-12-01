@@ -122,15 +122,6 @@ abstract class DataTableAbstractBuilder
     ///////////////////////////////////////////
 
     /**
-     * Get all the entities to show in the dataTable
-     * @return mixed[]
-     */
-    public function getAllEntities()
-    {
-        return $this->getRepository()->findAll();
-    }
-
-    /**
      * Get the url for the view button
      * Return null for no view button
      * @param mixed $entity Entity to show on click
@@ -147,6 +138,67 @@ abstract class DataTableAbstractBuilder
             ));
         }
     }
+
+    /**
+     * Return true if the table has a view column
+     * @return boolean
+     */
+    public function hasViewColumn()
+    {
+        return ($this->getViewRouteName() != null);
+    }
+
+
+    /**
+     * Get all the entities to show in the dataTable
+     * @return mixed[]
+     */
+    public function getAllEntities()
+    {
+        return $this->getRepository()->findAll();
+    }
+
+
+    /**
+     * Count all the entities to show in the dataTable
+     * @return integer
+     */
+    public function countAllEntities()
+    {
+        $qb = $this->getQueryBuilder()->select('COUNT(e)');
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Get the data to response form the Datatables Ajax Data
+     * @see http://datatables.net/manual/server-side
+     * @param array $params
+     * @return array
+     */
+    public function getDataTableAjaxData($params)
+    {
+        return array();
+    }
+
+    /**
+     * Count the data to response form the Datatables Ajax Data
+     * @see http://datatables.net/manual/server-side
+     * @param array $params
+     * @return integer
+     */
+    public function countDataTableAjaxData($params)
+    {
+        return 0;
+    }
+
+
+
+
+
+
+
+
+
 
 
     ///////////////////////////////////////////
@@ -179,16 +231,72 @@ abstract class DataTableAbstractBuilder
         return $this->getDefaultColumns();
     }
 
+    final public function getIndexedColumns()
+    {
+        $hashTable = array();
+        foreach ($this->getColumns() as $column) {
+            $hashTable[$column->getName()] = $column ;
+        }
+        return $hashTable;
+    }
 
+
+
+
+     /**
+     *  Transform array of entities to the data needs by Datatables
+     *  @param array $entities
+     *  @param array $params The Datatable params
+     *  @retun array
+     */
+    final function getDatatablesDatas($entities, $params)
+    {
+        $aDatas = array();
+        $columns = $this->getIndexedColumns();
+        foreach ($entities as $entity) {
+            $aDataArray = array();
+            $url = $this->getViewUrl($entity);
+
+            foreach ($params['columns'] as $col) {
+                $name = $col['name'];
+                if (!$name) {
+                    $aDataArray[] = "";
+                } else if ($name == 'nhacsam_dt_view') {
+                    $aDataArray[] = $this->getViewLink($url);
+                } else {
+                    $aDataArray[] = $columns[$name]->getValue();
+                }
+            }
+
+            $aDatas[] = $aDataArray;
+        }
+        return $aDatas;
+    }
+    
     //////////////////////////////////////////
     ///////////////// Utils //////////////////
     //////////////////////////////////////////
 
+    /**
+     * Get the repository of the entity
+     * @return \Doctrine\ORM\EntityRepository
+     */
     final protected function getRepository()
     {
         return $this->em->getRepository($this->getEntityName());
     }
 
 
+    /**
+     * Get a query builder for the entity
+     * Entity alias is 'e'
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    final protected function getQueryBuilder()
+    {
+        $qb =  $this->em->createQueryBuilder();
+        $qb->from($this->getEntityName(), 'e');
+        return $qb;
+    }
     
 }

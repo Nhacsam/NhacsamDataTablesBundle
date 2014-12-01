@@ -2,7 +2,7 @@
     {% if builder.useClientSide %}
         <thead>
             <tr>
-                {% if builder.viewRouteName %}
+                {% if builder.hasViewColumn %}
                     <th></th>
                 {% endif %}
                 {% for col in builder.columns %}  
@@ -13,7 +13,7 @@
         <tbody>
           {% for entity in builder.allEntities %}
                 <tr>
-                    {% if builder.viewUrl(entity) %}
+                    {% if builder.hasViewColumn %}
                         <td>
                             {{ builder.viewLink(builder.viewUrl(entity))|raw }}
                         </td>

@@ -1,0 +1,4 @@
+nhacsam_datatables_serverside_ajax:
+    pattern:  /ajax/datatables/serverside/{builder_name}
+    defaults: { _controller: NhacsamDataTablesBundle:Ajax:serverSide }
+
