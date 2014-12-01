@@ -2,7 +2,7 @@
 namespace Nhacsam\DataTablesBundle\Columns;
 
 /**
- * Base class to represent columns in a dataTable
+ * Column which are entity attribute
  * @author Nhacsam
  */
 class AttributeColumn extends AbstractColumn

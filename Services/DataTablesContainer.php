@@ -13,15 +13,23 @@ class DataTablesContainer
 
     /**
      * The doctrine component
-     * @var 
+     * @var \Doctrine\Bundle\DoctrineBundle\Registry
      */
     private $doctrine;
 
+     /**
+     * The router component
+     * @var \Symfony\Component\Routing\Router
+     */
+    private $router;
 
-   
-    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $doctrine)
-    {
+    
+    public function __construct(
+            \Doctrine\Bundle\DoctrineBundle\Registry $doctrine,
+            \Symfony\Component\Routing\Router $router
+    ) {
         $this->doctrine = $doctrine;
+        $this->router = $router;
     } 
     
     
@@ -29,6 +37,7 @@ class DataTablesContainer
     public function addDTBuilder(\Nhacsam\DataTablesBundle\Builder\DataTableAbstractBuilder $dtBuilder)
     {
         $dtBuilder->setManager($this->doctrine->getManager());
+        $dtBuilder->setRouter($this->router);
         $this->dtBuilders[$dtBuilder->getName()] = $dtBuilder;
     }
 
