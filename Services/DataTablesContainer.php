@@ -38,6 +38,7 @@ class DataTablesContainer
     {
         $dtBuilder->setManager($this->doctrine->getManager());
         $dtBuilder->setRouter($this->router);
+        $dtBuilder->setBundleConfiguration(array('min_server_side' => 1000));
         $this->dtBuilders[$dtBuilder->getName()] = $dtBuilder;
     }
 

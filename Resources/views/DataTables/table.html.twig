@@ -1,5 +1,4 @@
 <table id="dataTable-{{ builder.name }}" class="nhcsam_dataTable table table-stripped table-hover">
-    {% if builder.useClientSide %}
         <thead>
             <tr>
                 {% if builder.hasViewColumn %}
@@ -10,6 +9,7 @@
                 {% endfor %}
             </tr>
         </thead>
+    {% if builder.useClientSide %}
         <tbody>
           {% for entity in builder.allEntities %}
                 <tr>

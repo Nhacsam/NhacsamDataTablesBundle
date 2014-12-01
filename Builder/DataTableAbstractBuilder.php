@@ -28,7 +28,14 @@ abstract class DataTableAbstractBuilder
      * @var \Symfony\Component\Routing\Router
      */
     protected $router = null;
-    
+
+
+    /**
+     * The Bundle Configuration
+     * @var array
+     */
+    private $configuration;
+
     
     /** 
      * Name of the DataTable
@@ -117,6 +124,15 @@ abstract class DataTableAbstractBuilder
         }
     }
 
+    /**
+     * Set the bundle Configuration
+     * @param array $configuration
+     */
+    final public function setBundleConfiguration($configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
     ///////////////////////////////////////////
     //////// Advanced API Functions ///////////
     ///////////////////////////////////////////
@@ -166,8 +182,20 @@ abstract class DataTableAbstractBuilder
     public function countAllEntities()
     {
         $qb = $this->getQueryBuilder()->select('COUNT(e)');
-        return $qb->getQuery()->getSingleScalarResult();
+        return intval($qb->getQuery()->getSingleScalarResult());
     }
+
+
+
+
+
+
+
+
+
+    ///////////////////////////////////////////
+    ///////// Server side processing //////////
+    ///////////////////////////////////////////
 
     /**
      * Get the data to response form the Datatables Ajax Data
@@ -177,7 +205,19 @@ abstract class DataTableAbstractBuilder
      */
     public function getDataTableAjaxData($params)
     {
-        return array();
+        $qb = $this->buildBaseDataTableQuery($params);
+
+        $select = $this->getCustomSelectClauses($params);
+        array_unshift($select, 'DISTINCT e AS dt_entity');
+        $qb->select($select) ;
+
+        $qb->setMaxResults($params['length']);
+        $qb->setFirstResult($params['start']);
+        $this->addOrderClause($qb, $params);
+
+        $results = $qb->getQuery()->getResult();
+
+        return $this->getDatatablesDatas($results, $params);
     }
 
     /**
@@ -188,10 +228,138 @@ abstract class DataTableAbstractBuilder
      */
     public function countDataTableAjaxData($params)
     {
-        return 0;
+        $qb = $this->buildBaseDataTableQuery($params);
+        $qb->select('COUNT(DISTINCT e)') ;
+        return intval($qb->getQuery()->getSingleScalarResult());
     }
 
 
+
+    /**
+     * Get custom select clauses
+     * @param array $params
+     * @return array
+     */
+    protected function getCustomSelectClauses($params)
+    {
+        return array();
+    }
+
+
+    /**
+     * Build the base query for datatable search
+     * @param array $params DataTable params
+     * @return QueryBuilder
+     */
+    protected function buildBaseDataTableQuery($params)
+    {
+        $qb = $this->getQueryBuilder();
+
+        $i = 0;
+        $searchValue = $params['search']['value'];
+
+        foreach($params['columns'] as $column) {
+            $names = $this->getQueryName($column['name']);
+            if (! $names) {
+                continue;
+            } else if (!is_array($names)) {
+                $names = array($names);
+            }
+
+            foreach ($names as $name) {
+                $this->searchTerm($qb, $name, $searchValue, $i, $column['searchable']);
+                $this->searchTerm($qb, $name, $column['search']['value'], 'Col'.$i, $column['searchable']);
+                $i++;
+            }
+        }
+        $this->addCustomQueryClause($qb, $params);
+        return $qb;
+    }
+
+    /**
+     * Add the order cause to a QueryBuilder
+     * According to DataTable params
+     * @param QueryBuilder $qb
+     * @param array $params
+     */
+    protected function addOrderClause($qb, $params )
+    {
+        foreach ($params['order'] as $order) {
+            $clmnName = $params['columns'][ $order['column'] ]['name'];
+            $sortable = $params['columns'][ $order['column'] ]['orderable'];
+
+            $names = $this->getQueryName($clmnName);
+            if (! $names || !$sortable) {
+                continue;
+            } else if (!is_array($names)) {
+                $names = array($names);
+            }
+
+            foreach ($names as $name) {
+                $dir = $order['dir'];
+                $qb->addOrderBy($name, $dir);
+            }
+        }
+    }
+
+    /**
+     * Get the name to use in queries
+     * @param string $name
+     * @return string|null|array Null if to not use, Array if use more than 1 field
+     */
+    protected function getQueryName($name)
+    {
+        if ($name == 'nhacsam_dt_view') {
+            return null;
+        } else {
+//            $entity = $this->getInstance();
+//            if ($entity instanceof EntityListableExtended) {
+//                if ( in_array($name, $entity->getComputedColumn()) ) {
+//                    return null;
+//                }
+//            }
+
+            return 'e.'.$name;
+        }
+    }
+
+    /**
+     * Add Custom query clause to the query builder
+     * @param QueryBuilder $qb
+     * @param array $params DataTable params
+     */
+    protected function addCustomQueryClause($qb, $params)
+    {
+    }
+
+    /**
+     * Transform a search value for a particular field
+     * @param string $term Terms of the search
+     * @param string $column Name of the column
+     * @return string New search val
+     */
+    protected function transformTerm($term, $column) {
+        return $term.'%';
+    }
+
+    /**
+     * Add a search to the queryBuilder
+     * @param queryBuilder $qb
+     * @param string $column Name of the column (with 'e.'
+     * @param string $term Term to search
+     * @param string|integer $id A unique identifier
+     * @param boolean $searchable If have been set to be searchable
+     */
+    protected function searchTerm($qb, $column, $term, $id, $searchable) {
+
+        if ($term && $searchable) {
+            $qb->orWhere($column.' LIKE :search'.$id);
+            $qb->setParameter(
+                    'search'.$id,
+                    $this->transformTerm($term, $column)
+            );
+        }
+    }
 
 
 
@@ -215,10 +383,12 @@ abstract class DataTableAbstractBuilder
             return ($this->getDataTableType() == self::CLIENT_SIDE);
         } else {
 
-
-
-
-            return true;
+            $count = $this->countAllEntities();
+            if ($count < $this->configuration['min_server_side']) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -254,6 +424,7 @@ abstract class DataTableAbstractBuilder
         $aDatas = array();
         $columns = $this->getIndexedColumns();
         foreach ($entities as $entity) {
+            $entity = $entity['dt_entity'];
             $aDataArray = array();
             $url = $this->getViewUrl($entity);
 
@@ -264,7 +435,7 @@ abstract class DataTableAbstractBuilder
                 } else if ($name == 'nhacsam_dt_view') {
                     $aDataArray[] = $this->getViewLink($url);
                 } else {
-                    $aDataArray[] = $columns[$name]->getValue();
+                    $aDataArray[] = $columns[$name]->getValue($entity);
                 }
             }
 
