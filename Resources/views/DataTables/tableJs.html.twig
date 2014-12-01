@@ -23,7 +23,7 @@ $(document).ready(function() {
             {% endfor %}
         ],
         serverSide: {{ builder.useClientSide ? 'false' : 'true' }},
-        {#{% if server_side %}
+        {% if not builder.useClientSide %}
             ajax : {
             {% if method_name %}
                 url: "{{ url('dt_entity_list_server_side_and_method', {entity_name: entity_name_url, method_name: method_name}) }}",
