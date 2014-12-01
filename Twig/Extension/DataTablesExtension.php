@@ -68,12 +68,13 @@ class DataTablesExtension extends \Twig_Extension
         ));
     }
 
-    public function dataTableJs($entity_name)
+    public function dataTableJs($entity_name, $includeRequiredJs = false)
     {
         $builder = $this->dtContainer->getDTBuilder($entity_name);
         $template = 'NhacsamDataTablesBundle:DataTables:tableJs.html.twig';
         return $this->templating->render($template, array(
-            'builder' => $builder
+            'builder' => $builder,
+            'includeRequiredJs' => $includeRequiredJs
         ));
     }
 

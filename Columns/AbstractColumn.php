@@ -301,7 +301,9 @@ abstract class AbstractColumn
         $string = '';
         $type = $this->getType();
 
-        if (is_scalar($col)) {
+        if (! $col) {
+            return '';
+        } else if (is_scalar($col)) {
             $string = $col;
 
         } else if (

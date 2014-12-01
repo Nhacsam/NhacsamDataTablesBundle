@@ -6,13 +6,7 @@
                     <th></th>
                 {% endif %}
                 {% for col in builder.columns %}  
-                    <th>
-                        <div class="sort-arrows-container">
-                            <span class="fa fa-angle-up"></span>
-                            <span class="fa fa-angle-down"></span>
-                        </div>
-                        {{ col.label | trans({}, col.translationDomain)}}
-                    </th>       
+                    <th>{{ col.label | trans({}, col.translationDomain)}}</th>       
                 {% endfor %}
             </tr>
         </thead>

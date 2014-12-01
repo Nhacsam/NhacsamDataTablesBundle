@@ -1,4 +1,6 @@
-<script type="text/javascript" src="{{asset('bundles/nhacsamdatatables/js/jquery.dataTables.min.js')}}"></script>
+{% if includeRequiredJs %}
+    <script type="text/javascript" src="{{asset('bundles/nhacsamdatatables/js/jquery.dataTables.min.js')}}"></script>
+{% endif %}
 <script>
 
 $(document).ready(function() {
