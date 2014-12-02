@@ -20,7 +20,7 @@
 <script>
 
 $(document).ready(function() {
-    var oTable = $('#dataTable-{{ builder.name }}').DataTable({
+    var DataTable = $('#dataTable-{{ builder.name }}').DataTable({
         "displayLength": 10,    
         "columns": [
             {% if builder.hasViewColumn %}
@@ -56,6 +56,18 @@ $(document).ready(function() {
         
 
     });
+
+    $('#search-dataTable-{{ builder.name }}').appendTo(
+        $('#dataTable-{{ builder.name }}_filter')
+    ).change(function(e){
+        var value = $(this).val();
+        $('#dataTable-{{ builder.name }}_filter input').val(value);
+        DataTable.search(value).draw();
+        e.preventDefault();
+    });
+    
+    
+
 {#
     $('#all-reservations_filter label').remove();
     $('#all-reservations_filter').append($('#custom_all-reservations_filter').html());
@@ -77,12 +89,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#utils-search li a").click(function(e){
-        var date = $(this).data('val');
-        $('#dataTable-search').val(date);
-        oTable.search(date).draw();
-        e.preventDefault();
-    });#}
+    #}
 
 
 } );

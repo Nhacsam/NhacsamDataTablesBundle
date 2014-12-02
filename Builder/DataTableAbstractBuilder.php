@@ -96,7 +96,18 @@ abstract class DataTableAbstractBuilder
     {
         return '<a href="'.$url.'>view</a>';
     }
-
+    
+    
+    /** 
+     * Get the search helpers
+     * @return array|null
+     */
+    public function getSearchHelpers()
+    {
+        return null;
+    }
+    
+    
 
     //////////////////////////////////////////
     ///////// Dependency Injection ///////////
