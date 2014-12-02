@@ -382,7 +382,14 @@ abstract class DataTableAbstractBuilder
      * @return string New search val
      */
     protected function transformTerm($term, $column) {
-        return $term.'%';
+        
+        if ($term == 'true') {
+            return '1' ;
+        } else if ($term == 'false') {
+            return '0';
+        } else { 
+            return $term.'%';
+        }
     }
 
     /**
