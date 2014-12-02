@@ -1,11 +1,13 @@
 {% if includeRequiredJs %}
-    <script type="text/javascript" src="{{asset('bundles/nhacsamdatatables/js/jquery.dataTables.min.js')}}"></script>
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="//cdn.datatables.net/responsive/1.0.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 {% endif %}
 <script>
 
 $(document).ready(function() {
     var oTable = $('#dataTable-{{ builder.name }}').DataTable({
-        "displayLength": 50,    
+        "displayLength": 10,    
         "columns": [
             {% if builder.hasViewColumn %}
                 {
@@ -24,11 +26,20 @@ $(document).ready(function() {
                 }, 
             {% endfor %}
         ],
+        responsive: true,
+        
         serverSide: {{ builder.useClientSide ? 'false' : 'true' }},
         {% if not builder.useClientSide %}
-            ajax : "{{ url('nhacsam_datatables_serverside_ajax', {builder_name: builder.name}) }}"
+            ajax : "{{ url('nhacsam_datatables_serverside_ajax', {builder_name: builder.name}) }}",
         {% endif %}
-
+        
+        {% if builder.hasViewColumn %}
+            order: [ 1, 'asc' ]
+        {% else %}
+            order: [ 0, 'asc' ]
+        {% endif %}
+        
+        
 
     });
 {#

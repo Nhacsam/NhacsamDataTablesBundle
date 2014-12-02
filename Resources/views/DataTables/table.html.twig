@@ -2,7 +2,7 @@
         <thead>
             <tr>
                 {% if builder.hasViewColumn %}
-                    <th></th>
+                    <th>{{ 'View' }}</th>
                 {% endif %}
                 {% for col in builder.columns %}  
                     <th>{{ col.label | trans({}, col.translationDomain)}}</th>       
