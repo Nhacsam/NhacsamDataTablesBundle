@@ -1,3 +1,17 @@
-<link rel="stylesheet" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css" type="text/css" />
-<link rel="stylesheet" href="//cdn.datatables.net/responsive/1.0.3/css/dataTables.responsive.css" type="text/css" />
-<link rel="stylesheet" href="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/bootstrap/3/dataTables.bootstrap.css" type="text/css" />
+{% if config.use_remote_libs %}
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css" type="text/css" />
+    {% if config.responsive %}
+        <link rel="stylesheet" href="//cdn.datatables.net/responsive/1.0.3/css/dataTables.responsive.css" type="text/css" />
+    {% endif %}
+    {% if config.bootstrap %}
+        <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/bootstrap/3/dataTables.bootstrap.css" type="text/css" />
+    {% endif %}
+{% else %}
+    <link rel="stylesheet" href="{{ asset('bundles/nhacsamdatatables/css/jquery.dataTables.min.css') }}" type="text/css" />
+    {% if config.responsive %}
+        <link rel="stylesheet" href="{{ asset('bundles/nhacsamdatatables/css/dataTables.responsive.css') }}" type="text/css" />
+    {% endif %}
+    {% if config.bootstrap %}
+        <link rel="stylesheet" href="{{ asset('bundles/nhacsamdatatables/css/dataTables.bootstrap.css') }}" type="text/css" />
+    {% endif %}
+{% endif %}

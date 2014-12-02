@@ -1,7 +1,10 @@
+parameters:
+    nhacsam_datatables.config: ~
+
 services:
     datatables.container:
         class:  Nhacsam\DataTablesBundle\Services\DataTablesContainer
-        arguments: [@doctrine, @router]
+        arguments: [%nhacsam_datatables.config%, @doctrine, @router]
 
     
     
@@ -9,6 +12,6 @@ services:
     
     datatable.twig:
         class:        Nhacsam\DataTablesBundle\Twig\Extension\DataTablesExtension
-        arguments:   [@datatables.container]
+        arguments:   [%nhacsam_datatables.config%, @datatables.container]
         tags:
             - { name: twig.extension }

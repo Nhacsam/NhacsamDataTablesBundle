@@ -19,11 +19,26 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('nhacsam_datatables');
-
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
-
+        
+        $rootNode
+        	->children()
+        		->booleanNode('responsive')
+					->defaultValue(false)
+				->end()
+        		->booleanNode('bootstrap')
+					->defaultValue(false)
+				->end()
+        		->booleanNode('use_remote_libs')
+					->defaultValue(true)
+				->end()
+        		->booleanNode('default_include_js')
+					->defaultValue(true)
+				->end()
+        		->scalarNode('min_server_side')
+					->defaultValue('1000')
+				->end()
+        	->end()
+        ;
         return $treeBuilder;
     }
 }

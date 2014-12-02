@@ -1,7 +1,21 @@
 {% if includeRequiredJs %}
-    <script type="text/javascript" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="//cdn.datatables.net/responsive/1.0.3/js/dataTables.responsive.min.js"></script>
-    <script type="text/javascript" src="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+    {% if config.use_remote_libs %}
+        <script type="text/javascript" src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+        {% if config.responsive %}
+            <script type="text/javascript" src="//cdn.datatables.net/responsive/1.0.3/js/dataTables.responsive.min.js"></script>
+        {% endif %}
+        {% if config.bootstrap %}
+            <script type="text/javascript" src="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+        {% endif %}
+    {% else %}
+         <script type="text/javascript" src="{{ asset('bundles/nhacsamdatatables/js/jquery.dataTables.min.js') }}"></script>
+        {% if config.responsive %}
+             <script type="text/javascript" src="{{ asset('bundles/nhacsamdatatables/js/dataTables.responsive.min.js') }}"></script>
+        {% endif %}
+        {% if config.bootstrap %}
+             <script type="text/javascript" src="{{ asset('bundles/nhacsamdatatables/js/dataTables.bootstrap.js') }}"></script>
+        {% endif %}
+    {% endif %}
 {% endif %}
 <script>
 

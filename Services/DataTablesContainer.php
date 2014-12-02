@@ -10,7 +10,10 @@ class DataTablesContainer
 {
    
     private $dtBuilders = array();
-
+    
+    
+    private $configuration;
+    
     /**
      * The doctrine component
      * @var \Doctrine\Bundle\DoctrineBundle\Registry
@@ -25,9 +28,11 @@ class DataTablesContainer
 
     
     public function __construct(
+            array $configuration,
             \Doctrine\Bundle\DoctrineBundle\Registry $doctrine,
             \Symfony\Component\Routing\Router $router
     ) {
+        $this->configuration = $configuration;
         $this->doctrine = $doctrine;
         $this->router = $router;
     } 
@@ -38,7 +43,7 @@ class DataTablesContainer
     {
         $dtBuilder->setManager($this->doctrine->getManager());
         $dtBuilder->setRouter($this->router);
-        $dtBuilder->setBundleConfiguration(array('min_server_side' => 1000));
+        $dtBuilder->setBundleConfiguration($this->configuration);
         $this->dtBuilders[$dtBuilder->getName()] = $dtBuilder;
     }
 

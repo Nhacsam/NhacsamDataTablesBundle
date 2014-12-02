@@ -24,15 +24,16 @@ class DataTablesExtension extends \Twig_Extension
      * @var TODO
      */
     private $templating;
+    
+    private $configuration;
 
 
     /**
-     * Ccnstruct
-     * @param type $factory
-     * @param type $templating
+     * Construct
      */
-    public function __construct($dtContainer)
+    public function __construct(array $configuration, $dtContainer)
     {
+        $this->configuration = $configuration;
         $this->dtContainer = $dtContainer;
     }
 
@@ -64,24 +65,30 @@ class DataTablesExtension extends \Twig_Extension
         $builder = $this->dtContainer->getDTBuilder($entity_name);
         $template = 'NhacsamDataTablesBundle:DataTables:table.html.twig';
         return $this->templating->render($template, array(
-            'builder' => $builder
+            'builder' => $builder,
+            'config' => $this->configuration
         ));
     }
 
-    public function dataTableJs($entity_name, $includeRequiredJs = false)
+    public function dataTableJs($entity_name, $includeRequiredJs = null)
     {
+        if ($includeRequiredJs === null) {
+            $includeRequiredJs = $this->configuration['default_include_js'];
+        }
+        
         $builder = $this->dtContainer->getDTBuilder($entity_name);
         $template = 'NhacsamDataTablesBundle:DataTables:tableJs.html.twig';
         return $this->templating->render($template, array(
             'builder' => $builder,
-            'includeRequiredJs' => $includeRequiredJs
+            'includeRequiredJs' => $includeRequiredJs,
+            'config' => $this->configuration
         ));
     }
 
     public function dataTableCss()
     {
         $template = 'NhacsamDataTablesBundle:DataTables:tableCss.html.twig';
-        return $this->templating->render($template);
+        return $this->templating->render($template, array( 'config' => $this->configuration ));
     }
 
 
