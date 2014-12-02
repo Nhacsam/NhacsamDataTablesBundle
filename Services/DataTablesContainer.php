@@ -25,6 +25,12 @@ class DataTablesContainer
      * @var \Symfony\Component\Routing\Router
      */
     private $router;
+    
+    /**
+     * The templating component
+     * @var \Symfony\Component\Templating\EngineInterface
+     */
+    private $templating;
 
     
     public function __construct(

@@ -2,7 +2,7 @@
     <select id="search-dataTable-{{ builder.name }}">
         <option value="" selected="selected" >Search utils</option>
         {% for key, value in builder.searchHelpers %}
-            <option value="{{ key }}">{{ value }}</option>
+            <option value="{{ key }}">{{ value|trans({}, builder.translationDomain) }}</option>
         {% endfor %}
     </select> 
 {% endif %}

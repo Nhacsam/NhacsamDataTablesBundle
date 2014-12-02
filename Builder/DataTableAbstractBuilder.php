@@ -1,6 +1,7 @@
 <?php
 namespace Nhacsam\DataTablesBundle\Builder;
 
+use Nhacsam\DataTablesBundle\Columns\TemplateColumn;
 
 /**
  * Base class to build a new dataTable
@@ -28,6 +29,12 @@ abstract class DataTableAbstractBuilder
      * @var \Symfony\Component\Routing\Router
      */
     protected $router = null;
+    
+    /**
+     * The Templating coponnent
+     * @var \Symfony\Component\Templating\EngineInterface
+     */
+    protected $templating = null;
 
 
     /**
@@ -108,6 +115,14 @@ abstract class DataTableAbstractBuilder
     }
     
     
+    /**
+     * get Default translation domain
+     * @return string
+     */
+    public function getTranslationDomain()
+    {
+        return 'messages';
+    }    
 
     //////////////////////////////////////////
     ///////// Dependency Injection ///////////
@@ -116,32 +131,49 @@ abstract class DataTableAbstractBuilder
     /*
      * Set the default entity manager
      * @param \Doctrine\ORM\EntityManager $em The entity manager
+     * @return DataTableAbstractBuilder
      */
     final public function setManager(\Doctrine\ORM\EntityManager $em)
     {
         if ($this->em == null) {
             $this->em = $em;
         }
+        return $this;
     }
 
     /*
      * Set the routing component
      * @param \Doctrine\ORM\EntityManager $em The entity manager
+     * @return DataTableAbstractBuilder
      */
     final public function setRouter(\Symfony\Component\Routing\Router $router)
     {
         if ($this->router == null) {
             $this->router = $router;
         }
+        return $this;
     }
 
     /**
      * Set the bundle Configuration
      * @param array $configuration
+     * @return DataTableAbstractBuilder
      */
     final public function setBundleConfiguration($configuration)
     {
         $this->configuration = $configuration;
+        return $this;
+    }
+
+    /**
+     * set the templating component
+     * @var \Symfony\Component\Templating\EngineInterface
+     * @return DataTableAbstractBuilder
+     */
+    final public function setTemplating($templating)
+    {
+        $this->templating = $templating;
+        return $this;
     }
 
     ///////////////////////////////////////////
@@ -434,6 +466,7 @@ abstract class DataTableAbstractBuilder
     {
         $aDatas = array();
         $columns = $this->getIndexedColumns();
+        $this->setColumnsDependency($columns);
         foreach ($entities as $entity) {
             $entity = $entity['dt_entity'];
             $aDataArray = array();
@@ -454,6 +487,20 @@ abstract class DataTableAbstractBuilder
         }
         return $aDatas;
     }
+    
+    
+    /** 
+     * Set dependency to columns
+     */
+    private function setColumnsDependency($columns)
+    {
+        foreach ($columns as $column) {
+            if ($column instanceof TemplateColumn) {
+                $column->setTemplating($this->templating);
+            }
+        } 
+    }
+    
     
     //////////////////////////////////////////
     ///////////////// Utils //////////////////

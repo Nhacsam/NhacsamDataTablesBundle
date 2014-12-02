@@ -26,6 +26,7 @@ class AjaxController  extends Controller
         $params = $request->query->all();
 
         $builder = $this->get('datatables.container')->getDTBuilder($builder_name);
+        $builder->setTemplating($this->get('templating'));
 
         $return['draw'] = intval($params['draw']);
         $return['recordsTotal'] = $builder->countAllEntities();

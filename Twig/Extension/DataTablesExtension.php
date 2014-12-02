@@ -21,7 +21,7 @@ class DataTablesExtension extends \Twig_Extension
 
     /**
      * The Templating component
-     * @var TODO
+     * @var \Twig_Environment
      */
     private $templating;
     
@@ -63,6 +63,7 @@ class DataTablesExtension extends \Twig_Extension
     public function dataTable($entity_name)
     {
         $builder = $this->dtContainer->getDTBuilder($entity_name);
+        $builder->setTemplating($this->templating);
         $template = 'NhacsamDataTablesBundle:DataTables:table.html.twig';
         return $this->templating->render($template, array(
             'builder' => $builder,
@@ -77,6 +78,7 @@ class DataTablesExtension extends \Twig_Extension
         }
         
         $builder = $this->dtContainer->getDTBuilder($entity_name);
+        $builder->setTemplating($this->templating);
         $template = 'NhacsamDataTablesBundle:DataTables:tableJs.html.twig';
         return $this->templating->render($template, array(
             'builder' => $builder,
